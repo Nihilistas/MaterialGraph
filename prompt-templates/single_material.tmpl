@@ -1,0 +1,30 @@
+Produce a knowledge-base entry for the material **{MATERIAL}** in the following exact JSON structure:
+
+{
+  "id": "{material-id}",
+  "label": "{Material Label}",
+  "info": "{1–2 sentence summary}",
+  "derived_from": ["list", "of", "materials"],
+  "found_in": ["natural source", "synthetic source"],
+  "discovery": {
+    "locations": ["places it can be found"],
+    "season": "time of year (or null)",
+    "appearance": "visual description",
+    "notes": "optional helpful tips"
+  },
+  "recipe": [
+    "step 1",
+    "step 2",
+    "step 3"
+  ],
+  "related": ["other materials"],
+  "media": {
+    "images": ["optional URL"],
+    "videos": ["optional URL"]
+  }
+}
+
+Rules:
+- All fields must exist (use null or empty lists if unknown).
+- Keep values simple and short.
+- Do not add fields not in the schema.

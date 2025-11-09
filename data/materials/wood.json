@@ -1,0 +1,23 @@
+{
+  "id": "wood",
+  "label": "Wood",
+  "info": "Wood is a natural fibrous material from trees, valued for its strength and versatility. It is widely used for building, crafting, and fuel.",
+  "derived_from": ["trees"],
+  "found_in": ["forests", "orchards"],
+  "discovery": {
+    "locations": ["global forests", "woodlands"],
+    "season": null,
+    "appearance": "solid fibrous material with visible grain; ranges from pale to dark brown",
+    "notes": "Different tree species produce woods with distinct hardness and grain patterns."
+  },
+  "recipe": [
+    "harvest tree",
+    "cut logs into boards",
+    "season or dry the wood"
+  ],
+  "related": ["bark", "charcoal", "paper"],
+  "media": {
+    "images": [],
+    "videos": []
+  }
+}

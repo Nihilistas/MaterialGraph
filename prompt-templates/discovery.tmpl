@@ -1,0 +1,17 @@
+Provide discovery and field-guide information for the material **{MATERIAL}** using this strict JSON format:
+
+{
+  "id": "{material-id}",
+  "found_in": ["broad locations"],
+  "discovery": {
+    "locations": ["specific places it can be found"],
+    "season": "season-of-discovery or null",
+    "appearance": "visual characteristics",
+    "notes": "tips for recognizing it or where to search"
+  }
+}
+
+Guidelines:
+- "found_in" is broad categories (e.g., forests, deserts, factories).
+- "discovery.locations" is more specific ("base of pine trees", "riverbeds").
+- If unknown, leave fields as empty lists or null.

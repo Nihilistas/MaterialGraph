@@ -1,0 +1,29 @@
+For each material in the list below, produce a structured knowledge-base entry in the following strict JSON format:
+
+{
+  "id": "{id}",
+  "label": "{Label}",
+  "info": "{short summary}",
+  "derived_from": [],
+  "found_in": [],
+  "discovery": {
+    "locations": [],
+    "season": null,
+    "appearance": "",
+    "notes": ""
+  },
+  "recipe": [],
+  "related": [],
+  "media": {
+    "images": [],
+    "videos": []
+  }
+}
+
+Materials list:
+{LIST_OF_MATERIALS}
+
+Rules:
+- Return all materials as a JSON array of objects.
+- Preserve the exact key order and structure.
+- Use null or empty lists if data is not known.

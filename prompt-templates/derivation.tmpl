@@ -1,0 +1,21 @@
+For the material **{MATERIAL}**, provide derivation-chain information using the following strict JSON format:
+
+{
+  "id": "{material-id}",
+  "derived_from": ["direct predecessors"],
+  "makes": ["direct successors"],
+  "alternative_paths": [
+    ["variant", "intermediate", "chain"],
+    ["another", "pathway"]
+  ]
+}
+
+Definitions:
+- "derived_from": materials that directly lead to this one.
+- "makes": materials that can be created from this one.
+- "alternative_paths": full multi-step pathways or variations (A → B → C).
+
+Rules:
+- All keys must be present.
+- If no data exists, use empty lists.
+- Keep item names simple (single words when possible).
