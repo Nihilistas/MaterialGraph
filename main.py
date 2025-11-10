@@ -28,7 +28,7 @@ def load_materials():
     return materials
 
 
-def build_graph_elements(materials):
+def build_graph_elements(materials, derivations=None):
     nodes = []
     edges = []
 
@@ -45,10 +45,36 @@ def build_graph_elements(materials):
             if src in materials:
                 edges.append({"data": {"source": src, "target": mat["id"], "label": "→"}})
 
+        # Add edges from derivation.json data if provided
+    if derivations:
+        for der in derivations.values():
+            srcs = der.get("derived_from", [])
+            tgt = der.get("id")
+            for s in srcs:
+                if s in materials:
+                    edges.append({"data": {"source": s, "target": tgt, "label": "→"}})
+            # "makes" edges
+            for m in der.get("makes", []):
+                if m in materials:
+                    edges.append({"data": {"source": tgt, "target": m, "label": "→"}})
+
     return nodes + edges
 
 
 materials = load_materials()
+
+# Load derivation.json files if they exist
+DERIV_DIR = Path(__file__).resolve().parent / "data" / "derivations"
+derivations = {}
+if DERIV_DIR.exists():
+    for file in DERIV_DIR.glob("*.json"):
+        try:
+            d = json.loads(file.read_text())
+            derivations[d["id"]] = d
+        except Exception:
+            pass
+
+elements = build_graph_elements(materials, derivations)()
 elements = build_graph_elements(materials)
 
 
