@@ -5,13 +5,15 @@ import json
 from pathlib import Path
 
 import dash
-from dash import html, dcc
+from dash import html, dcc, no_update
 import dash_cytoscape as cyto
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 
 app = dash.Dash(__name__)
 
-DATA_DIR = Path(__file__).resolve().parent / "data" / "materials"
+BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR / "data" / "materials"
+DERIV_DIR = BASE_DIR / "data" / "derivations"
 
 
 def load_materials():
@@ -28,60 +30,71 @@ def load_materials():
     return materials
 
 
-def build_graph_elements(materials, derivations=None):
-    nodes = []
-    edges = []
+def load_derivations():
+    derivations = {}
+    if not DERIV_DIR.exists():
+        return derivations
 
-    for mat in materials.values():
-        nodes.append({
-            "data": {
-                "id": mat["id"],
-                "label": mat.get("label", mat["id"]),
-                "info": mat.get("info", "")
-            }
-        })
-
-        for src in mat.get("derived_from", []):
-            if src in materials:
-                edges.append({"data": {"source": src, "target": mat["id"], "label": "→"}})
-
-        # Add edges from derivation.json data if provided
-    if derivations:
-        for der in derivations.values():
-            srcs = der.get("derived_from", [])
-            tgt = der.get("id")
-            for s in srcs:
-                if s in materials:
-                    edges.append({"data": {"source": s, "target": tgt, "label": "→"}})
-            # "makes" edges
-            for m in der.get("makes", []):
-                if m in materials:
-                    edges.append({"data": {"source": tgt, "target": m, "label": "→"}})
-
-    return nodes + edges
-
-
-materials = load_materials()
-
-# Load derivation.json files if they exist
-DERIV_DIR = Path(__file__).resolve().parent / "data" / "derivations"
-derivations = {}
-if DERIV_DIR.exists():
     for file in DERIV_DIR.glob("*.json"):
         try:
             d = json.loads(file.read_text())
             derivations[d["id"]] = d
         except Exception:
             pass
+    return derivations
 
-elements = build_graph_elements(materials, derivations)
+
+def build_graph_elements(materials, derivations=None):
+    nodes = {}
+    edges = []
+
+    def ensure_node(node_id, label=None, info=""):
+        if not node_id:
+            return
+        if node_id not in nodes:
+            nodes[node_id] = {
+                "data": {
+                    "id": node_id,
+                    "label": label or node_id,
+                    "info": info or ""
+                }
+            }
+
+    def add_edge(source, target):
+        if source and target:
+            edges.append({"data": {"source": source, "target": target, "label": "→"}})
+
+    # Nodes and edges from material files
+    for mat in materials.values():
+        ensure_node(mat["id"], mat.get("label", mat["id"]), mat.get("info", ""))
+        for src in mat.get("derived_from", []):
+            ensure_node(src)  # show referenced materials even if not yet researched
+            add_edge(src, mat["id"])
+
+    # Nodes and edges from derivations (may reference materials not yet researched)
+    if derivations:
+        for der in derivations.values():
+            tgt = der.get("id")
+            ensure_node(tgt)
+            for s in der.get("derived_from", []):
+                ensure_node(s)
+                add_edge(s, tgt)
+            for m in der.get("makes", []):
+                ensure_node(m)
+                add_edge(tgt, m)
+
+    return list(nodes.values()) + edges
 
 app.layout = html.Div([
     html.H2("Materials Knowledge Graph - Data-Driven"),
 
+    dcc.Store(id='materials-store'),
+    dcc.Store(id='derivations-store'),
+    dcc.Interval(id='data-refresh', interval=5_000, n_intervals=0),
+
     cyto.Cytoscape(
         id='materials-graph',
-        elements=elements,
+        elements=[],
         style={'width': '100%', 'height': '500px'},
         layout={'name': 'cose'},
         stylesheet=[
@@ -94,11 +107,37 @@ app.layout = html.Div([
 ])
 
 
-@app.callback(Output('info-panel', 'children'), Input('materials-graph', 'tapNodeData'))
-def display_info(data):
+@app.callback(
+    Output('materials-graph', 'elements'),
+    Output('materials-store', 'data'),
+    Output('derivations-store', 'data'),
+    Input('data-refresh', 'n_intervals'),
+    State('materials-store', 'data'),
+    State('derivations-store', 'data'),
+)
+def refresh_data(_, prev_materials, prev_derivations):
+    materials = load_materials()
+    derivations = load_derivations()
+    prev_materials = prev_materials or {}
+    prev_derivations = prev_derivations or {}
+
+    if materials == prev_materials and derivations == prev_derivations:
+        return no_update, no_update, no_update
+
+    elements = build_graph_elements(materials, derivations)
+    return elements, materials, derivations
+
+
+@app.callback(
+    Output('info-panel', 'children'),
+    Input('materials-graph', 'tapNodeData'),
+    Input('materials-store', 'data'),
+)
+def display_info(data, materials):
     if not data:
         return "Click a material to see details."
 
+    materials = materials or {}
     mat = materials.get(data.get("id"))
     if not mat:
         return "No data available."

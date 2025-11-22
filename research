@@ -1,0 +1,61 @@
+#!/bin/sh
+set -eu
+
+# Generate a prompt, run it through codex exec, and save the JSON output.
+# Usage: research <single|derivation|batch> <material|list_file> [output_name]
+
+if [ $# -lt 2 ]; then
+  echo "Usage: $(basename "$0") <single|derivation|batch> <material|list_file> [output_name]" >&2
+  exit 1
+fi
+
+mode="$1"
+arg="$2"
+maybe_output="${3:-}"
+script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+UV_CACHE_DIR=${UV_CACHE_DIR:-"$script_dir/.uv-cache"}
+export UV_CACHE_DIR
+XDG_CACHE_HOME=${XDG_CACHE_HOME:-"$script_dir/.cache"}
+XDG_STATE_HOME=${XDG_STATE_HOME:-"$script_dir/.state"}
+export XDG_CACHE_HOME XDG_STATE_HOME
+
+if ! command -v codex >/dev/null 2>&1; then
+  echo "codex CLI is required (expected subcommand: codex exec)" >&2
+  exit 1
+fi
+
+case "$mode" in
+  single)
+    template="single_material"
+    outfile="$script_dir/data/materials/${arg}.json"
+    render_cmd="uv run python \"$script_dir/prompt_cli.py\" render \"$template\" --material \"$arg\""
+    ;;
+  derivation)
+    template="derivation"
+    outfile="$script_dir/data/derivations/${arg}.json"
+    render_cmd="uv run python \"$script_dir/prompt_cli.py\" render \"$template\" --material \"$arg\""
+    ;;
+  batch)
+    template="batch_materials"
+    outfile="$script_dir/data/materials/${maybe_output:-batch_materials.json}"
+    render_cmd="uv run python \"$script_dir/prompt_cli.py\" render \"$template\" --list_file \"$arg\""
+    ;;
+  *)
+    echo "Unknown mode: $mode (expected: single, derivation, batch)" >&2
+    exit 1
+    ;;
+esac
+
+mkdir -p "$(dirname -- "$outfile")"
+
+# Render prompt text.
+prompt=$(eval "$render_cmd")
+
+# Feed prompt into codex exec and capture the JSON response.
+result=$(printf "%s\n" "$prompt" | codex exec)
+
+# Strip Markdown fences if the model wrapped the JSON.
+cleaned=$(printf "%s\n" "$result" | awk 'NR==1 && /^```/ {next} /^```[A-Za-z0-9_-]*$/ {next} {print}')
+
+printf "%s\n" "$cleaned" > "$outfile"
+echo "Saved to $outfile"

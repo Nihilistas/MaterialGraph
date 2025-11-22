@@ -1,0 +1,23 @@
+{
+  "id": "coke",
+  "label": "Coke",
+  "info": "Carbon-rich fuel made by heating coal in the absence of air.",
+  "derived_from": ["coal"],
+  "found_in": ["bituminous coal seams", "industrial coke ovens"],
+  "discovery": {
+    "locations": ["coal mining regions"],
+    "season": null,
+    "appearance": "hard, porous black lumps",
+    "notes": "Handle with gloves; produces dust."
+  },
+  "recipe": [
+    "Select low-ash bituminous coal",
+    "Heat in airtight oven at high temperature to drive off volatiles",
+    "Cool in controlled environment and size the coke pieces"
+  ],
+  "related": ["anthracite", "charcoal", "blast_furnace_slag"],
+  "media": {
+    "images": [],
+    "videos": []
+  }
+}

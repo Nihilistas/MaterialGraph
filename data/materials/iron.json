@@ -1,0 +1,23 @@
+{
+  "id": "iron",
+  "label": "Iron",
+  "info": "Common metallic element used in steel and tools.",
+  "derived_from": [],
+  "found_in": ["hematite ore", "magnetite ore"],
+  "discovery": {
+    "locations": ["sedimentary bands", "igneous deposits"],
+    "season": null,
+    "appearance": "silver-gray metal",
+    "notes": "Rusts easily; keep dry."
+  },
+  "recipe": [
+    "Mine iron ore",
+    "Smelt ore with carbon in a blast furnace",
+    "Refine pig iron to desired grade"
+  ],
+  "related": ["steel", "carbon"],
+  "media": {
+    "images": [],
+    "videos": []
+  }
+}

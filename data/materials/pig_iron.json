@@ -1,0 +1,23 @@
+{
+  "id": "pig_iron",
+  "label": "Pig Iron",
+  "info": "Crude high-carbon iron made as the first product from smelting iron ore; brittle and meant for further refining.",
+  "derived_from": ["iron_ore", "coke", "limestone"],
+  "found_in": ["blast_furnace_output"],
+  "discovery": {
+    "locations": ["ironworks", "smelters"],
+    "season": null,
+    "appearance": "dark gray, silvery sheen, cast into ingot rows",
+    "notes": "Handle as feedstock; too brittle for direct use."
+  },
+  "recipe": [
+    "Smelt iron ore in a blast furnace with coke as fuel and reducing agent",
+    "Use limestone flux to bind impurities into slag",
+    "Tap molten iron into sand molds to form pig ingots"
+  ],
+  "related": ["cast_iron", "wrought_iron", "steel"],
+  "media": {
+    "images": [],
+    "videos": []
+  }
+}

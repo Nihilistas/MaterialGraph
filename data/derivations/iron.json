@@ -1,0 +1,9 @@
+{
+  "id": "iron",
+  "derived_from": ["iron_ore", "pig_iron"],
+  "makes": ["steel", "cast_iron"],
+  "alternative_paths": [
+    ["iron_ore", "pig_iron", "wrought_iron"],
+    ["iron_ore", "sponge_iron", "steel"]
+  ]
+}

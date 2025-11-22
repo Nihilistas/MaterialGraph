@@ -1,0 +1,41 @@
+{
+  "id": "copper",
+  "label": "Copper",
+  "info": "Red-orange metal known for high electrical and thermal conductivity.",
+  "derived_from": [
+    "chalcopyrite",
+    "bornite",
+    "malachite"
+  ],
+  "found_in": [
+    "sulfide ores",
+    "oxide ores",
+    "native metal nodules"
+  ],
+  "discovery": {
+    "locations": [
+      "porphyry deposits",
+      "sedimentary copper belts",
+      "oxidized zones near surface"
+    ],
+    "season": null,
+    "appearance": "Reddish metallic luster; green patina when weathered",
+    "notes": "Look for green or blue staining on rocks; heavy relative to size."
+  },
+  "recipe": [
+    "Crush ore and concentrate via flotation or gravity methods",
+    "Roast concentrate to remove sulfur and moisture",
+    "Smelt in furnace to produce matte (copper-iron sulfide)",
+    "Convert matte in converter furnace to blister copper (~98% pure)",
+    "Fire-refine and electrolytically refine to 99.99% cathode copper"
+  ],
+  "related": [
+    "bronze",
+    "brass",
+    "copper_wire"
+  ],
+  "media": {
+    "images": [],
+    "videos": []
+  }
+}

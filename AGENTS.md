@@ -10,6 +10,7 @@
 - Install deps (preferred): `uv sync` (or `python -m venv .venv && source .venv/bin/activate && pip install -e .`).
 - Run the Dash app locally: `uv run python main.py` (debug server on default Dash port).
 - Prompt helpers: `uv run python prompt_cli.py list-templates`; render a prompt: `uv run python prompt_cli.py render --name single --material copper`.
+- To generate and save LLM outputs via codex exec, use the helper script: `sh research single copper` (material JSON), `sh research derivation copper` (derivation JSON), or `sh research batch materials.txt` (batch file; optional 3rd arg for filename). Requires `codex exec` on PATH.
 - Validate JSON inputs when editing data: `python -m json.tool data/materials/new_material.json`.
 
 ## Coding Style & Naming Conventions
