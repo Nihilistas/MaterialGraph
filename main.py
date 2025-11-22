@@ -74,9 +74,7 @@ if DERIV_DIR.exists():
         except Exception:
             pass
 
-elements = build_graph_elements(materials, derivations)()
-elements = build_graph_elements(materials)
-
+elements = build_graph_elements(materials, derivations)
 
 app.layout = html.Div([
     html.H2("Materials Knowledge Graph - Data-Driven"),
